@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
 
         moving = true;
 
-        Vector3 targetPosition = transform.position + direction * stepLength;
+        Vector3 initialPosition = transform.position;
+        Vector3 targetPosition = initialPosition + direction * stepLength;
         float distancePerFrame = stepSpeed * Time.fixedDeltaTime;
 
         float movedDistance = 0f;
@@ -40,7 +41,7 @@ public class PlayerController : MonoBehaviour
             position += direction * distancePerFrame;
             movedDistance += distancePerFrame;
 
-            if (movedDistance > stepLength) position = transform.position + direction * stepLength;
+            if (movedDistance > stepLength) position = initialPosition + direction * stepLength;
 
             transform.position = position;
 
