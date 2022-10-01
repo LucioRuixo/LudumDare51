@@ -8,6 +8,7 @@ public class PlayerController_LoadedMovement : MonoBehaviour
     private enum StepDirections
     {
         Forward,
+        Back,
         Left,
         Right
     }
@@ -36,6 +37,7 @@ public class PlayerController_LoadedMovement : MonoBehaviour
     private void TakeInput()
     {
         if (Input.GetKeyDown(KeyCode.W)) movementChain.Add(StepDirections.Forward);
+        else if (Input.GetKeyDown(KeyCode.S)) movementChain.Add(StepDirections.Back);
         else if (Input.GetKeyDown(KeyCode.A)) movementChain.Add(StepDirections.Left);
         else if (Input.GetKeyDown(KeyCode.D)) movementChain.Add(StepDirections.Right);
     }
@@ -75,6 +77,9 @@ public class PlayerController_LoadedMovement : MonoBehaviour
         {
             case StepDirections.Forward:
                 direction = Vector3.forward;
+                break;
+            case StepDirections.Back:
+                direction = -Vector3.forward;
                 break;
             case StepDirections.Left:
                 direction = -Vector3.right;
