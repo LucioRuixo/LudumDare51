@@ -86,8 +86,6 @@ public class PlayerController : MonoBehaviour
 
     private void StopHiding()
     {
-        Debug.Log("stop hiding");
-
         MoveToPos(posBeforeHiding);
         canHide = false;
         isHidden = false;
@@ -124,7 +122,6 @@ public class PlayerController : MonoBehaviour
         float t = 0.0f;
         while (t < 1.0)
         {
-            Debug.Log(t);
             t += distancePerFrame;
             if (t > 1) t = 1;
 

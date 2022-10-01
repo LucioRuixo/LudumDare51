@@ -6,7 +6,7 @@ public class LaserSpawner : MonoBehaviour
 {
     private bool spawningLasers;
     [SerializeField] float timeBetweenSpawns;
-    [SerializeField] Laser laserToSpawn;
+    [SerializeField] GameObject laserToSpawn;
     void Start()
     {
         SetSpawningLasers(true);
