@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -14,7 +16,8 @@ public class PlayerController : MonoBehaviour
     bool isAnimating = false;
     private bool moving = false;
     private bool canHide = false;
-    private bool isHidden = false;
+    private bool isHiddenFromFront = false;
+    private bool isHiddenFromAbove = false;
 
     private HidingSpot currentHidingSpot = null;
     private Vector3 posBeforeHiding;
@@ -27,6 +30,11 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
+    private void OnEnable()
+    {
+        GameplayManager.OnUnsafePhaseStart += (GameplayManager.BaldieTypes type) => CheckSafety(type == GameplayManager.BaldieTypes.Frontal);
+    }
+
     private void Start()
     {
         yPos = transform.position.y;
@@ -37,9 +45,14 @@ public class PlayerController : MonoBehaviour
         TakeInput();
     }
 
+    private void OnDisable()
+    {
+        GameplayManager.OnUnsafePhaseStart -= (GameplayManager.BaldieTypes type) => CheckSafety(type == GameplayManager.BaldieTypes.Frontal);
+    }
+
     private void TakeInput()
     {
-        if (isHidden)
+        if (isHiddenFromFront || isHiddenFromAbove)
         {
             if (Input.GetKeyDown(KeyCode.Space)) StopHiding();
         }
@@ -58,9 +71,9 @@ public class PlayerController : MonoBehaviour
         MoveToPos(transform.position + dir.normalized * stepLength);
     }
 
-    private void MoveToPos(Vector3 pos)
+    private void MoveToPos(Vector3 pos, Action OnEnd = null)
     {
-        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z)));
+        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd));
     }     
 
     private void Jump()
@@ -73,24 +86,36 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("enter hiding");
         canHide = true;
-        if (!moving) Hide();
+        if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
         currentHidingSpot = hidingSpot;
     }
 
-    private void Hide()
+    private void Hide(bool fromFront)
     {
+        if (fromFront) isHiddenFromFront = true;
+        else isHiddenFromAbove = true;
+
         posBeforeHiding = lastPosition;
-        isHidden = true;
         canHide = false;
         MoveToPos(currentHidingSpot.transform.position);
     }
 
     private void StopHiding()
     {
-        MoveToPos(posBeforeHiding);
+        MoveToPos(posBeforeHiding, () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal));
+
         canHide = false;
-        isHidden = false;
+        isHiddenFromFront = false;
+        isHiddenFromAbove = false;
         currentHidingSpot = null;
+    }
+
+    private void CheckSafety(bool fromFront)
+    {
+        if (fromFront && isHiddenFromFront) return;
+        if (!fromFront && isHiddenFromAbove) return;
+
+        if (!GameplayManager.Get().Safe) Die();
     }
 
     public void OnJumpEnd()
@@ -100,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnHittedByHazard()
     {
-        if (!isHidden) Die(); //tiene potencial de romperse si le player sale del escondite mientras esta triggereando. Seguiria en el trigger pero ya no estaria Hidden entonces no moriria, polish 
+        if (!isHiddenFromFront && !isHiddenFromAbove) Die(); //tiene potencial de romperse si le player sale del escondite mientras esta triggereando. Seguiria en el trigger pero ya no estaria Hidden entonces no moriria, polish 
     }
 
     private void Die()
@@ -122,7 +147,7 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Coroutines
-    private IEnumerator Move(Vector3 pos)
+    private IEnumerator Move(Vector3 pos, Action OnEnd = null)
     {
         yield return new WaitForFixedUpdate();
 
@@ -143,7 +168,9 @@ public class PlayerController : MonoBehaviour
         }
 
         moving = false;
-        if (canHide) Hide();
+        if (canHide) Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
+
+        OnEnd?.Invoke();
     }
 
     private IEnumerator JumpToPedestal(Vector3 posToJumpTo)
