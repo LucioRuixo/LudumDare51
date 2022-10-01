@@ -9,4 +9,9 @@ public class PlayerBody : MonoBehaviour
     {
         controller.OnJumpEnd();
     }
+
+    public void OnStandingOnPedestal()
+    {
+        controller.OnWin();
+    }
 }
