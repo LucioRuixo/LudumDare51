@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
         isAnimating = true;
         posToJumpTo = new Vector3(posToJumpTo.x, yPos, posToJumpTo.z);
         yield return new WaitUntil(() => moving == false);
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.1f);
         yield return new WaitForFixedUpdate();
         Vector3 distToPedestal = posToJumpTo - transform.position;
         
@@ -195,7 +195,7 @@ public class PlayerController : MonoBehaviour
         {
             MoveInDir(new Vector3(0.0f, 0.0f, distToPedestal.normalized.z));
             yield return new WaitUntil(() => moving == false);
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.1f);
             yield return new WaitForFixedUpdate();
         }
         aux = 0;
@@ -211,7 +211,7 @@ public class PlayerController : MonoBehaviour
         {
             MoveInDir(new Vector3(distToPedestal.normalized.x, 0.0f, 0.0f));
             yield return new WaitUntil(() => moving == false);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
             yield return new WaitForFixedUpdate();
         }
         MoveToPos(posToJumpTo);
