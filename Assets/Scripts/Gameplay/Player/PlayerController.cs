@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float stepLength = 0.5f;
     [SerializeField] private float stepSpeed = 50f;
 
+    private bool isAlive = true;
     private bool moving = false;
     private bool canHide = false;
     private bool isHidden = false;
@@ -74,6 +75,17 @@ public class PlayerController : MonoBehaviour
         canHide = false;
         isHidden = false;
         currentHidingSpot = null;
+    }
+
+    public void OnHittedByHazard()
+    {
+        if (!isHidden) Die(); //tiene potencial de romperse si le player sale del escondite mientras esta triggereando. Seguiria en el trigger pero ya no estaria Hidden entonces no moriria, polish 
+    }
+    private void Die()
+    {
+        isAlive = false;
+        //aca llamaria la funcion de Game Over, si tuviera una
+        Debug.Log("GAME OVER, PLAYER DIED");
     }
 
     #region Coroutines
