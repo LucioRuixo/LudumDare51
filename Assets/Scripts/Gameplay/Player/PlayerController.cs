@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
             position += direction * distancePerFrame;
             movedDistance += distancePerFrame;
 
-            if (movedDistance > stepLength) position = initialPosition + direction * stepLength;
+            if (movedDistance > stepLength) position = targetPosition;
 
             transform.position = position;
 
