@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController_FreeMovement : MonoBehaviour
 {
     [SerializeField] private float stepLength = 0.5f;
     [SerializeField] private float stepSpeed = 50f;
@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(Move(-Vector3.forward));
     }
 
+    #region Coroutines
     private IEnumerator Move(Vector3 direction)
     {
         yield return new WaitForFixedUpdate();
@@ -50,4 +51,5 @@ public class PlayerController : MonoBehaviour
 
         moving = false;
     }
+    #endregion
 }
