@@ -1,50 +1,57 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
-public class GameplayManager : MonoBehaviour
+public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 {
-    private enum MovementModes
-    {
-        Free,
-        Loaded
-    }
-
     [Header("Timer")]
     [SerializeField] private TimerHandle timer;
 
-    [Header("Player")]
-    [SerializeField] private PlayerController_FreeMovement playerController_FreeMovement;
-    [SerializeField] private PlayerController_LoadedMovement playerController_LoadedMovement;
-    [Space]
-    [SerializeField] private MovementModes playerMovementMode;
+    [Header("Enemies")]
+    [SerializeField] private Baldie[] baldies;
 
-    private void Awake()
+    [Header("Gameplay Settings")]
+    [SerializeField] private float unsafePhaseDuration = 3f;
+
+    bool safe = true;
+    public bool Safe => safe;
+
+    public static event Action OnUnsafePhaseStart;
+
+    public override void Awake()
     {
-        timer.OnTimerEnd += OnTimerEnd;
+        base.Awake();
 
-        if (playerMovementMode == MovementModes.Loaded) playerController_LoadedMovement.OnMovementChainExecuted += ResetTimer;
+        timer.OnTimerEnd += StartUnsafePhase;
     }
 
-    private void Start()
+    private void StartUnsafePhase()
     {
-        if (playerMovementMode == MovementModes.Free)
-        {
-            playerController_FreeMovement.enabled = true;
-            playerController_LoadedMovement.enabled = false;
-        }
-        else
-        {
-            playerController_FreeMovement.enabled = false;
-            playerController_LoadedMovement.enabled = true;
-        }
+        foreach (Baldie baldie in baldies) baldie.ToggleFacingState();
+        safe = false;
+
+        StartCoroutine(UnsafePhase());
     }
 
-    private void OnTimerEnd()
+    private void OnUnsafePhaseEnd()
     {
-        if (playerMovementMode == MovementModes.Loaded) playerController_LoadedMovement.StartExecutingMovementChain();
+        foreach (Baldie baldie in baldies) baldie.ToggleFacingState();
+        safe = true;
+
+        ResetTimer();
     }
 
     private void ResetTimer()
     {
         timer.StartTimer();
+    }
+
+    private IEnumerator UnsafePhase()
+    {
+        OnUnsafePhaseStart?.Invoke();
+
+        yield return new WaitForSeconds(unsafePhaseDuration);
+
+        OnUnsafePhaseEnd();
     }
 }
