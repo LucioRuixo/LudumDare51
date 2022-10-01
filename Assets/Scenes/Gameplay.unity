@@ -493,7 +493,7 @@ MonoBehaviour:
   timer: {fileID: 1132699376}
   playerController_FreeMovement: {fileID: 1506483744}
   playerController_LoadedMovement: {fileID: 1506483745}
-  playerMovementMode: 1
+  playerMovementMode: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,7 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102162ae0f610f4468c8dd38462860e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepLength: 1
+  stepLength: 0.1
   stepSpeed: 20
 --- !u!114 &1506483745
 MonoBehaviour:
