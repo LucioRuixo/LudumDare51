@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -14,7 +15,8 @@ public class PlayerController : MonoBehaviour
     private bool isAlive = true;
     private bool moving = false;
     private bool canHide = false;
-    private bool isHidden = false;
+    private bool isHiddenFromFront = false;
+    private bool isHiddenFromAbove = false;
 
     private HidingSpot currentHidingSpot = null;
     private Vector3 posBeforeHiding;
@@ -29,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameplayManager.OnUnsafePhaseStart += CheckSafety;
+        GameplayManager.OnUnsafePhaseStart += (GameplayManager.BaldieTypes type) => CheckSafety(type == GameplayManager.BaldieTypes.Frontal);
     }
 
     private void Start()
@@ -44,12 +46,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameplayManager.OnUnsafePhaseStart -= CheckSafety;
+        GameplayManager.OnUnsafePhaseStart -= (GameplayManager.BaldieTypes type) => CheckSafety(type == GameplayManager.BaldieTypes.Frontal);
     }
 
     private void TakeInput()
     {
-        if (isHidden)
+        if (isHiddenFromFront || isHiddenFromAbove)
         {
             if (Input.GetKeyDown(KeyCode.Space)) StopHiding();
         }
@@ -83,30 +85,34 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("enter hiding");
         canHide = true;
-        if (!moving) Hide();
+        if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
         currentHidingSpot = hidingSpot;
     }
 
-    private void Hide()
+    private void Hide(bool fromFront)
     {
+        if (fromFront) isHiddenFromFront = true;
+        else isHiddenFromAbove = true;
+
         posBeforeHiding = lastPosition;
-        isHidden = true;
         canHide = false;
         MoveToPos(currentHidingSpot.transform.position);
     }
 
     private void StopHiding()
     {
-        MoveToPos(posBeforeHiding, CheckSafety);
+        MoveToPos(posBeforeHiding, () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal));
 
         canHide = false;
-        isHidden = false;
+        isHiddenFromFront = false;
+        isHiddenFromAbove = false;
         currentHidingSpot = null;
     }
 
-    private void CheckSafety()
+    private void CheckSafety(bool fromFront)
     {
-        if (isHidden) return;
+        if (fromFront && isHiddenFromFront) return;
+        if (!fromFront && isHiddenFromAbove) return;
 
         if (!GameplayManager.Get().Safe) Die();
     }
@@ -118,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnHittedByHazard()
     {
-        if (!isHidden) Die(); //tiene potencial de romperse si le player sale del escondite mientras esta triggereando. Seguiria en el trigger pero ya no estaria Hidden entonces no moriria, polish 
+        if (!isHiddenFromFront && !isHiddenFromAbove) Die(); //tiene potencial de romperse si le player sale del escondite mientras esta triggereando. Seguiria en el trigger pero ya no estaria Hidden entonces no moriria, polish 
     }
 
     private void Die()
@@ -150,7 +156,7 @@ public class PlayerController : MonoBehaviour
         }
 
         moving = false;
-        if (canHide) Hide();
+        if (canHide) Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
 
         OnEnd?.Invoke();
     }

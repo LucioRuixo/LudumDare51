@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class HidingSpot : MonoBehaviour
 {
+    [SerializeField] private GameplayManager.BaldieTypes hidingType;
+    public GameplayManager.BaldieTypes HidingType => hidingType;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

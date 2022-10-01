@@ -1,19 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-public class Baldie : MonoBehaviour
+public class UpperBaldie : MonoBehaviour
 {
     private enum FacingStates
     {
-        TurnedBack,
-        TurnedForward
+        FacingUp,
+        FacingDown
     }
 
-    [SerializeField] private float turnSpeed = 10f;
+    [SerializeField] private float turnSpeed = 250f;
 
     private bool turning = false;
 
-    private FacingStates facingState = FacingStates.TurnedBack;
+    private FacingStates facingState = FacingStates.FacingUp;
 
     private void StartTurningBack()
     {
@@ -29,7 +29,7 @@ public class Baldie : MonoBehaviour
     {
         if (turning) return;
 
-        if (facingState == FacingStates.TurnedBack) StartTurningForward();
+        if (facingState == FacingStates.FacingUp) StartTurningForward();
         else StartTurningBack();
     }
 
@@ -50,8 +50,8 @@ public class Baldie : MonoBehaviour
 
             rotatedAngle += Mathf.Abs(anglesPerTick);
 
-            if (rotatedAngle <= Mathf.Abs(angle)) rotation.y += anglesPerTick;
-            else rotation.y = targetAngle;
+            if (rotatedAngle <= Mathf.Abs(angle)) rotation.z += anglesPerTick;
+            else rotation.z = targetAngle;
 
             transform.rotation = Quaternion.Euler(rotation);
 
