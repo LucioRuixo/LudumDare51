@@ -111,8 +111,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a74614e2ea82ad34890ad5e843889b34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerHeldTransformExample: {fileID: 1802065416513832827}
-  PlayerBeforeJumpingTransformExample: {fileID: 7479838481570491510}
+  playerHeldTransformExample: {fileID: 1802065416513832827}
+  playerBeforeJumpingTransformExample: {fileID: 7479838481570491510}
+  initPosA: -3
+  initPosB: 3
 --- !u!1 &2863189618274067834
 GameObject:
   m_ObjectHideFlags: 0
