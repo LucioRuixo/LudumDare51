@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController_FreeMovement : MonoBehaviour
 {
     [SerializeField] private float stepLength = 0.5f;
     [SerializeField] private float stepSpeed = 50f;
@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    #region Coroutines
     private IEnumerator Move(Vector3 pos)
     {
         yield return new WaitForFixedUpdate();
@@ -74,11 +75,15 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z)));
     }
+            
 
     public void OnEnterHidingSpotTrigger(HidingSpot hidingSpot)
     {
         Debug.Log("enter hiding");
         canHide = true;
+        if (!moving) Hide();
+        currentHidingSpot = hidingSpot;
+    }    
         if (!moving) Hide();
         currentHidingSpot = hidingSpot;
     }    
@@ -100,4 +105,5 @@ public class PlayerController : MonoBehaviour
         isHidden = false;
         currentHidingSpot = null;
     }
+   
 }
