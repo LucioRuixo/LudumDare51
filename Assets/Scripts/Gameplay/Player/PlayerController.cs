@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerController_FreeMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float stepLength = 0.5f;
     [SerializeField] private float stepSpeed = 50f;
@@ -41,6 +41,41 @@ public class PlayerController_FreeMovement : MonoBehaviour
         
     }
 
+    private void MoveInDir(Vector3 dir)
+    {
+        MoveToPos(transform.position + dir * stepLength);
+    }
+
+    private void MoveToPos(Vector3 pos)
+    {
+        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z)));
+    }     
+
+    public void OnEnterHidingSpotTrigger(HidingSpot hidingSpot)
+    {
+        Debug.Log("enter hiding");
+        canHide = true;
+        if (!moving) Hide();
+        currentHidingSpot = hidingSpot;
+    }    
+    private void Hide()
+    {
+        posBeforeHiding = lastPosition;
+        isHidden = true;
+        canHide = false;
+        MoveToPos(currentHidingSpot.transform.position);
+    }
+
+    private void StopHiding()
+    {
+        Debug.Log("stop hiding");
+
+        MoveToPos(posBeforeHiding);
+        canHide = false;
+        isHidden = false;
+        currentHidingSpot = null;
+    }
+
     #region Coroutines
     private IEnumerator Move(Vector3 pos)
     {
@@ -65,45 +100,5 @@ public class PlayerController_FreeMovement : MonoBehaviour
         moving = false;
         if (canHide) Hide();
     }
-    
-    private void MoveInDir(Vector3 dir)
-    {
-        MoveToPos(transform.position + dir * stepLength);
-    }
-
-    private void MoveToPos(Vector3 pos)
-    {
-        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z)));
-    }
-            
-
-    public void OnEnterHidingSpotTrigger(HidingSpot hidingSpot)
-    {
-        Debug.Log("enter hiding");
-        canHide = true;
-        if (!moving) Hide();
-        currentHidingSpot = hidingSpot;
-    }    
-        if (!moving) Hide();
-        currentHidingSpot = hidingSpot;
-    }    
-
-    private void Hide()
-    {
-        posBeforeHiding = lastPosition;
-        isHidden = true;
-        canHide = false;
-        MoveToPos(currentHidingSpot.transform.position);
-    }
-
-    private void StopHiding()
-    {
-        Debug.Log("stop hiding");
-
-        MoveToPos(posBeforeHiding);
-        canHide = false;
-        isHidden = false;
-        currentHidingSpot = null;
-    }
-   
+    #endregion
 }
