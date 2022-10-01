@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -26,6 +27,11 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
+    private void OnEnable()
+    {
+        GameplayManager.OnUnsafePhaseStart += CheckSafety;
+    }
+
     private void Start()
     {
         yPos = transform.position.y;
@@ -34,6 +40,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         TakeInput();
+    }
+
+    private void OnDisable()
+    {
+        GameplayManager.OnUnsafePhaseStart -= CheckSafety;
     }
 
     private void TakeInput()
@@ -57,9 +68,9 @@ public class PlayerController : MonoBehaviour
         MoveToPos(transform.position + dir * stepLength);
     }
 
-    private void MoveToPos(Vector3 pos)
+    private void MoveToPos(Vector3 pos, Action OnEnd = null)
     {
-        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z)));
+        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd));
     }     
 
     private void Jump()
@@ -86,10 +97,18 @@ public class PlayerController : MonoBehaviour
 
     private void StopHiding()
     {
-        MoveToPos(posBeforeHiding);
+        MoveToPos(posBeforeHiding, CheckSafety);
+
         canHide = false;
         isHidden = false;
         currentHidingSpot = null;
+    }
+
+    private void CheckSafety()
+    {
+        if (isHidden) return;
+
+        if (!GameplayManager.Get().Safe) Die();
     }
 
     public void OnJumpEnd()
@@ -110,7 +129,7 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Coroutines
-    private IEnumerator Move(Vector3 pos)
+    private IEnumerator Move(Vector3 pos, Action OnEnd = null)
     {
         yield return new WaitForFixedUpdate();
 
@@ -132,6 +151,8 @@ public class PlayerController : MonoBehaviour
 
         moving = false;
         if (canHide) Hide();
+
+        OnEnd?.Invoke();
     }
     #endregion
 }
