@@ -1,19 +1,31 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
     [SerializeField] private GameObject credits;
     [SerializeField] private GameObject tutorial;
     [SerializeField] private GameObject pauseMenu;
-    bool pauseState = false;
+    [SerializeField] private VideoPlayer openingCutscene;
 
-    public void GoToGameplay()
+    private bool openingCutscenePlayed = false;
+    private bool pauseState = false;
+
+    private void OnEnable()
     {
-        Time.timeScale = 1.0f;
-        SceneManager.LoadScene(1);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
+    {
+        if (scene.name == "MainMenu" && !openingCutscenePlayed) StartCoroutine(PlayOpeningCutscene());
     }
 
     public void SetCreditsVisibility(bool newVisibility)
@@ -51,8 +63,30 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         SceneManager.LoadScene(0);
     }
 
+    public void GoToGameplay()
+    {
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene(1);
+    }
+
     public void CloseGame()
     {
         Application.Quit();
     }
+
+    #region Coroutines
+    private IEnumerator PlayOpeningCutscene()
+    {
+        openingCutscene.Prepare();
+
+        yield return new WaitUntil(() => openingCutscene.isPrepared);
+
+        openingCutscene.Play();
+
+        yield return new WaitUntil(() => !openingCutscene.isPlaying);
+
+        openingCutscene.gameObject.SetActive(false);
+        openingCutscenePlayed = true;
+    }
+    #endregion
 }
