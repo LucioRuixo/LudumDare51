@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
 {
@@ -24,7 +24,7 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
 
     public enum Songs
     {
-        Pre_Gameplay,
+        MainMenu,
         Gameplay
     }
 
@@ -49,28 +49,31 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
 
     public Songs CurrentSong { private set; get; }
 
-    public override void Awake()
+    void OnEnable()
     {
-        base.Awake();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-
-    void OnEnable() {}
 
     void Start()
     {
         musicAudioSource.volume = musicBaseVolume;
-
         foreach (AudioSource source in sfxAudioSources) source.volume = soundBaseVolume;
     }
 
-    void Update() {}
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
-    void OnDisable() {}
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
+    {
+        PlayMusicOnNewScene(scene.name);
+    }
 
     #region Sound
-    void UpdateSoundVolume(float volume) { foreach (AudioSource source in sfxAudioSources) source.volume = volume * soundBaseVolume; }
+    private void UpdateSoundVolume(float volume) { foreach (AudioSource source in sfxAudioSources) source.volume = volume * soundBaseVolume; }
 
-    void StopSFXOnNewScene(string sceneName)
+    private void StopSFXOnNewScene(string sceneName)
     {
         foreach (AudioSource source in sfxAudioSources)
         {
@@ -106,17 +109,29 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     #endregion
 
     #region Music
-    void UpdateMusicVolume(float volume)
+    private void UpdateMusicVolume(float volume)
     {
         musicAudioSource.volume = volume * musicBaseVolume;
     }
 
-    void PlayMusicOnNewScene(string sceneName)
+    private void PlayMusicOnNewScene(string sceneName)
     {
         bool playNewSong = false;
         Songs song = 0;
 
-        // if scene -> definir song, playNewSong = true
+        switch (sceneName)
+        {
+            case "MainMenu":
+                song = Songs.MainMenu;
+                playNewSong = true;
+                break;
+            case "Gameplay":
+                song = Songs.Gameplay;
+                playNewSong = true;
+                break;
+            default:
+                break;
+        }
 
         if (playNewSong) PlayMusic(song);
     }
