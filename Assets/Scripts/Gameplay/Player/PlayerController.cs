@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         }
         if (isHiddenFromFront || isHiddenFromAbove)
         {
-            if (Input.GetKeyDown(KeyCode.Space)) StopHiding();
+            if (Input.GetKeyDown(KeyCode.E)) StopHiding();
         }
         else if (!moving && !isAnimating)
         {
@@ -156,6 +156,8 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForFixedUpdate();
 
         moving = true;
+        animator.SetBool("Moving", true);
+
         lastPosition = transform.position;
         float distancePerFrame = stepSpeed * Time.fixedDeltaTime;
         Vector3 initialPos = transform.position;
@@ -172,6 +174,8 @@ public class PlayerController : MonoBehaviour
         }
 
         moving = false;
+        animator.SetBool("Moving", false);
+
         if (canHide) Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
 
         OnEnd?.Invoke();

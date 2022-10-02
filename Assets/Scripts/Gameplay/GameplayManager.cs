@@ -10,18 +10,34 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
         Upper
     }
 
+    public enum StageTypes
+    {
+        Regular,
+        Final
+    }
+
+    [Serializable]
+    public struct StageData
+    {
+        public StageTypes type;
+
+        public FrontalBaldie frontalBaldie;
+        public UpperBaldie upperBaldie;
+    }
+
     [Header("Timer")]
     [SerializeField] private TimerHandle timer;
-
-    [Header("Enemies")]
-    [SerializeField] private UpperBaldie[] upperBaldies;
-    [SerializeField] private FrontalBaldie[] frontalBaldies;
 
     [Header("Gameplay Settings")]
     [SerializeField] private float unsafePhaseDuration = 3f;
 
     private bool safe = true;
-    [SerializeField] private BaldieTypes currentUnsafePhaseType = BaldieTypes.Frontal;
+
+    private BaldieTypes currentUnsafePhaseType = BaldieTypes.Frontal;
+    private BaldieTypes lastUnsafePhaseType = BaldieTypes.Frontal;
+
+    [SerializeField] private StageData initialStage;
+    [SerializeField] private StageData currentStage;
 
     public bool Safe => safe;
     public BaldieTypes CurrentUnsafePhaseType => currentUnsafePhaseType;
@@ -35,15 +51,30 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
         timer.OnTimerEnd += StartUnsafePhase;
     }
 
+    private void Start()
+    {
+        currentStage = initialStage;
+    }
+
     private void StartUnsafePhase()
     {
-        switch (currentUnsafePhaseType)
+        switch (currentStage.type)
         {
-            case BaldieTypes.Frontal:
-                foreach (FrontalBaldie frontalBaldie in frontalBaldies) frontalBaldie.ToggleFacingState();
+            case StageTypes.Regular:
+                currentUnsafePhaseType = BaldieTypes.Frontal;
+                currentStage.frontalBaldie.ToggleFacingState();
                 break;
-            case BaldieTypes.Upper:
-                foreach (UpperBaldie upperBaldie in upperBaldies) upperBaldie.ToggleFacingState();
+            case StageTypes.Final:
+                if (lastUnsafePhaseType == BaldieTypes.Frontal)
+                {
+                    currentUnsafePhaseType = BaldieTypes.Upper;
+                    currentStage.upperBaldie.ToggleFacingState();
+                }
+                else
+                {
+                    currentUnsafePhaseType = BaldieTypes.Frontal;
+                    currentStage.frontalBaldie.ToggleFacingState();
+                }
                 break;
             default: break;
         }
@@ -55,17 +86,19 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 
     private void OnUnsafePhaseEnd()
     {
-        switch (currentUnsafePhaseType)
+        switch (currentStage.type)
         {
-            case BaldieTypes.Frontal:
-                foreach (FrontalBaldie frontalBaldie in frontalBaldies) frontalBaldie.ToggleFacingState();
+            case StageTypes.Regular:
+                currentStage.frontalBaldie.ToggleFacingState();
                 break;
-            case BaldieTypes.Upper:
-                foreach (UpperBaldie upperBaldie in upperBaldies) upperBaldie.ToggleFacingState();
+            case StageTypes.Final:
+                if (lastUnsafePhaseType == BaldieTypes.Frontal) currentStage.upperBaldie.ToggleFacingState();
+                else currentStage.frontalBaldie.ToggleFacingState();
                 break;
             default: break;
         }
 
+        lastUnsafePhaseType = lastUnsafePhaseType == BaldieTypes.Frontal ? BaldieTypes.Upper : BaldieTypes.Frontal;
         safe = true;
 
         ResetTimer();
@@ -76,6 +109,12 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
         timer.StartTimer();
     }
 
+    public void SetNewStage(StageData newStage)
+    {
+        currentStage = newStage;
+    }
+
+    #region Coroutines
     private IEnumerator UnsafePhase(BaldieTypes type)
     {
         OnUnsafePhaseStart?.Invoke(type);
@@ -84,4 +123,5 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 
         OnUnsafePhaseEnd();
     }
+    #endregion
 }
