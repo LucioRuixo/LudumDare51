@@ -52,6 +52,10 @@ public class PlayerController : MonoBehaviour
 
     private void TakeInput()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            UIManager.Get().TogglePauseState();
+        }
         if (isHiddenFromFront || isHiddenFromAbove)
         {
             if (Input.GetKeyDown(KeyCode.E)) StopHiding();
@@ -95,6 +99,7 @@ public class PlayerController : MonoBehaviour
         if (fromFront) isHiddenFromFront = true;
         else isHiddenFromAbove = true;
 
+        currentHidingSpot.Animate();
         posBeforeHiding = lastPosition;
         canHide = false;
         MoveToPos(currentHidingSpot.transform.position);
@@ -131,7 +136,7 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        //aca llamaria la funcion de Game Over, si tuviera una
+        //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
         Debug.Log("GAME OVER, PLAYER DIED");
     }
 
@@ -142,7 +147,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnWin()
     {
-        //aca se llama la funcion de ganar
+        GameData.Get().SetWinState(true);
         Debug.Log("YOU WIN");
     }
 
@@ -169,10 +174,14 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        moving = false;
         animator.SetBool("Moving", false);
 
-        if (canHide) Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
+        if (canHide)
+        {
+            yield return new WaitForSeconds(0.25f);
+            Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
+        }
+        moving = false;
 
         OnEnd?.Invoke();
     }
