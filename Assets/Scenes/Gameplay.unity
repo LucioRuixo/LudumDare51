@@ -840,6 +840,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pivot: {fileID: 465325278}
+  freezeX: 1
+  freezeY: 0
+  freezeZ: 0
   offset: {x: 0, y: 5.11, z: -4}
 --- !u!1 &1049257994
 GameObject:
