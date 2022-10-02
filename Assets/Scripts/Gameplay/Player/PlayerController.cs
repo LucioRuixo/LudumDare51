@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
     private void StopHiding()
     {
         MoveToPos(posBeforeHiding, () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal));
-
+        currentHidingSpot.Animate();
         canHide = false;
         isHiddenFromFront = false;
         isHiddenFromAbove = false;
