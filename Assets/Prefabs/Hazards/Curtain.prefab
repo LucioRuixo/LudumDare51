@@ -215,7 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3429711410179242987}
   m_Layer: 0
-  m_Name: HidingSpot
+  m_Name: Curtain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
