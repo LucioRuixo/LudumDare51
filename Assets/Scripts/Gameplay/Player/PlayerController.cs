@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isHiddenFromFront || isHiddenFromAbove)
         {
-            if (Input.GetKeyDown(KeyCode.Space)) StopHiding();
+            if (Input.GetKeyDown(KeyCode.E)) StopHiding();
         }
         else if (!moving && !isAnimating)
         {
