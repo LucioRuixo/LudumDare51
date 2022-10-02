@@ -11,18 +11,14 @@ public class PressurePlateDoor : MonoBehaviour
         {
             pressurePlates[i].Door = this;
 
-            if (i == enabledPlate)
-            {
-                Debug.Log($"PLATE \"{pressurePlates[i].name}\" ENABLED");
-                pressurePlates[i].Enable();
-            }
+            if (i == enabledPlate) pressurePlates[i].Enable();
             else pressurePlates[i].Disable();
         }
     }
 
     public void Open()
     {
-        Debug.Log($"OPEN DOOR \"{name}\"");
+        
     }
 
     public void Close()

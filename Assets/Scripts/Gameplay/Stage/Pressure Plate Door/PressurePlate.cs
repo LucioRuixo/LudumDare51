@@ -10,7 +10,6 @@ public class PressurePlate : MonoBehaviour
 
     public void OnPlayerEnteredTrigger()
     {
-        Debug.Log("PLAYER ENTERED TRIGGER");
         Door.Open();
     }
 
