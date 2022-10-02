@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     private bool openingCutscenePlayed = false;
     private bool pauseState = false;
+
+    public static event Action OnOpeningCutscenePlayed;
 
     private void OnEnable()
     {
@@ -87,6 +90,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
         openingCutscene.gameObject.SetActive(false);
         openingCutscenePlayed = true;
+
+        OnOpeningCutscenePlayed?.Invoke();
     }
     #endregion
 }
