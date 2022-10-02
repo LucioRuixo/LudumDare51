@@ -52,9 +52,13 @@ public class PlayerController : MonoBehaviour
 
     private void TakeInput()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            UIManager.Get().TogglePauseState();
+        }
         if (isHiddenFromFront || isHiddenFromAbove)
         {
-            if (Input.GetKeyDown(KeyCode.Space)) StopHiding();
+            if (Input.GetKeyDown(KeyCode.E)) StopHiding();
         }
         else if (!moving && !isAnimating)
         {
@@ -131,7 +135,7 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        //aca llamaria la funcion de Game Over, si tuviera una
+        //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
         Debug.Log("GAME OVER, PLAYER DIED");
     }
 
@@ -142,7 +146,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnWin()
     {
-        //aca se llama la funcion de ganar
+        GameData.Get().SetWinState(true);
         Debug.Log("YOU WIN");
     }
 
