@@ -6,6 +6,6 @@ public class StageTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out PlayerBody playerBody)) GameplayManager.Get().SetNewStage(stageData);
+        if (other.CompareTag("Player")) GameplayManager.Get().SetNewStage(stageData);
     }
 }
