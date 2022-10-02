@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
         if (fromFront) isHiddenFromFront = true;
         else isHiddenFromAbove = true;
 
+        currentHidingSpot.Animate();
         posBeforeHiding = lastPosition;
         canHide = false;
         MoveToPos(currentHidingSpot.transform.position);
@@ -173,10 +174,14 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        moving = false;
         animator.SetBool("Moving", false);
 
-        if (canHide) Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
+        if (canHide)
+        {
+            yield return new WaitForSeconds(0.25f);
+            Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
+        }
+        moving = false;
 
         OnEnd?.Invoke();
     }
