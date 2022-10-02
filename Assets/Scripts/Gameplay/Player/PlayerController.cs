@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float stepSpeed = 50f;
 
     private bool isAlive = true;
+    bool isAnimating = false;
     private bool moving = false;
     private bool canHide = false;
     private bool isHiddenFromFront = false;
@@ -55,7 +56,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space)) StopHiding();
         }
-        else if (!moving)
+        else if (!moving && !isAnimating)
         {
             if (Input.GetKeyDown(KeyCode.W)) MoveInDir(Vector3.forward);
             else if (Input.GetKeyDown(KeyCode.S)) MoveInDir(-Vector3.forward);
@@ -67,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveInDir(Vector3 dir)
     {
-        MoveToPos(transform.position + dir * stepLength);
+        MoveToPos(transform.position + dir.normalized * stepLength);
     }
 
     private void MoveToPos(Vector3 pos, Action OnEnd = null)
@@ -134,6 +135,17 @@ public class PlayerController : MonoBehaviour
         Debug.Log("GAME OVER, PLAYER DIED");
     }
 
+    public void OnEnterPedestalTrigger(Vector3 posToJumpTo)
+    {
+        StartCoroutine(JumpToPedestal(posToJumpTo));
+    }
+
+    public void OnWin()
+    {
+        //aca se llama la funcion de ganar
+        Debug.Log("YOU WIN");
+    }
+
     #region Coroutines
     private IEnumerator Move(Vector3 pos, Action OnEnd = null)
     {
@@ -160,5 +172,51 @@ public class PlayerController : MonoBehaviour
 
         OnEnd?.Invoke();
     }
+
+    private IEnumerator JumpToPedestal(Vector3 posToJumpTo)
+    {
+        isAnimating = true;
+        posToJumpTo = new Vector3(posToJumpTo.x, yPos, posToJumpTo.z);
+        yield return new WaitUntil(() => moving == false);
+        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForFixedUpdate();
+        Vector3 distToPedestal = posToJumpTo - transform.position;
+        
+        int aux = 0;
+        if (distToPedestal.z < stepLength - 0.05f)
+        {
+            aux = -1;
+        }
+        else if (distToPedestal.z > stepLength - 0.05f)
+        {
+            aux = 1;
+        }
+        while ((posToJumpTo - transform.position).z * aux > stepLength - 0.05f)
+        {
+            MoveInDir(new Vector3(0.0f, 0.0f, distToPedestal.normalized.z));
+            yield return new WaitUntil(() => moving == false);
+            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForFixedUpdate();
+        }
+        aux = 0;
+        if (distToPedestal.x < stepLength - 0.05f)
+        {
+            aux = -1;
+        }
+        else if (distToPedestal.x > stepLength - 0.05f)
+        {
+            aux = 1;
+        }
+        while ((posToJumpTo - transform.position).x * aux > stepLength - 0.05f)
+        {
+            MoveInDir(new Vector3(distToPedestal.normalized.x, 0.0f, 0.0f));
+            yield return new WaitUntil(() => moving == false);
+            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForFixedUpdate();
+        }
+        MoveToPos(posToJumpTo);
+        animator.SetTrigger("JumpToPedestal");
+    }
+    
     #endregion
 }
