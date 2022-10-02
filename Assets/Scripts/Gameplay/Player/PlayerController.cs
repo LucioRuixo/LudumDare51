@@ -75,9 +75,9 @@ public class PlayerController : MonoBehaviour
         MoveToPos(transform.position + dir.normalized * stepLength);
     }
 
-    private void MoveToPos(Vector3 pos, Action OnEnd = null)
+    private void MoveToPos(Vector3 pos, Action OnEnd = null, float delay = 0f)
     {
-        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd));
+        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd, delay));
     }     
 
     private void Jump()
@@ -90,24 +90,30 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("enter hiding");
         canHide = true;
-        if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
         currentHidingSpot = hidingSpot;
+        if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
     }
 
     private void Hide(bool fromFront)
     {
+        animator.SetTrigger("Hide");
+
         if (fromFront) isHiddenFromFront = true;
         else isHiddenFromAbove = true;
 
         currentHidingSpot.Animate();
         posBeforeHiding = lastPosition;
         canHide = false;
-        MoveToPos(currentHidingSpot.transform.position);
+        MoveToPos(currentHidingSpot.transform.position, null, 0.25f);
     }
 
     private void StopHiding()
     {
-        MoveToPos(posBeforeHiding, () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal));
+        animator.SetTrigger("Stop Hiding");
+
+        MoveToPos(posBeforeHiding, () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal), 0.25f);
+
+        currentHidingSpot.Animate();
 
         canHide = false;
         isHiddenFromFront = false;
@@ -152,12 +158,14 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Coroutines
-    private IEnumerator Move(Vector3 pos, Action OnEnd = null)
+    private IEnumerator Move(Vector3 pos, Action OnEnd = null, float delay = 0f)
     {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+
         yield return new WaitForFixedUpdate();
 
         moving = true;
-        animator.SetBool("Moving", true);
+        animator.SetTrigger("Move");
 
         lastPosition = transform.position;
         float distancePerFrame = stepSpeed * Time.fixedDeltaTime;
@@ -174,13 +182,12 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        animator.SetBool("Moving", false);
-
         if (canHide)
         {
             yield return new WaitForSeconds(0.25f);
             Hide(currentHidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
         }
+
         moving = false;
 
         OnEnd?.Invoke();

@@ -415,6 +415,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5166825106020418377, guid: c5cbbf25b53ae3845a8c09e8a12c9111, type: 3}
+      propertyPath: m_Name
+      value: Main Menu Button
+      objectReference: {fileID: 0}
     - target: {fileID: 5224351397657462891, guid: c5cbbf25b53ae3845a8c09e8a12c9111, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -502,6 +506,14 @@ PrefabInstance:
     - target: {fileID: 5224351397657462895, guid: c5cbbf25b53ae3845a8c09e8a12c9111, type: 3}
       propertyPath: m_Name
       value: Endscreen Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224351398688943072, guid: c5cbbf25b53ae3845a8c09e8a12c9111, type: 3}
+      propertyPath: m_Name
+      value: Play Again Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224351398688943086, guid: c5cbbf25b53ae3845a8c09e8a12c9111, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoToGameplay
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5cbbf25b53ae3845a8c09e8a12c9111, type: 3}
