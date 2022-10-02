@@ -90,8 +90,8 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("enter hiding");
         canHide = true;
-        if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
         currentHidingSpot = hidingSpot;
+        if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
     }
 
     private void Hide(bool fromFront)
