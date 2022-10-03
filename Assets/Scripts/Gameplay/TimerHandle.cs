@@ -32,10 +32,18 @@ public class TimerHandle : MonoBehaviour
     private IEnumerator Timer(float duration)
     {
         timer = duration;
+        float timeSinceLastSecond = 0f;
 
         while (timer > 0f)
         {
+            timeSinceLastSecond += Time.deltaTime;
             yield return new WaitForSeconds(Time.deltaTime);
+
+            if (timeSinceLastSecond >= 1f)
+            {
+                AudioManager.Get().PlayGameplaySFX(AudioManager.GameplaySFXs.Clock);
+                timeSinceLastSecond = 0f;
+            }
 
             timer -= Time.deltaTime;
             if (timer < 0f) timer = 0f;

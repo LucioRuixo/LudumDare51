@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float stepSpeed = 50f;
 
     private bool isAlive = true;
-    bool isAnimating = false;
+    private bool isAnimating = false;
     private bool moving = false;
     private bool canHide = false;
     private bool isHiddenFromFront = false;
@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastPosition;
 
     private float yPos = 1.0f; //posicion en Y en que se va a mantener siempre el player
+
+    private AudioManager audioManager;
 
     private bool canMoveRight = true;
     private bool canMoveLeft = true;
@@ -42,7 +44,11 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        audioManager = AudioManager.Get();
+
         yPos = transform.position.y;
+
+        audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Spawn);
     }
 
     private void Update()
@@ -89,6 +95,8 @@ public class PlayerController : MonoBehaviour
     {
         moving = true;
         animator.SetTrigger("Jump");
+
+        audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Jump);
     }
 
     public void OnEnterHidingSpotTrigger(HidingSpot hidingSpot)
@@ -101,6 +109,8 @@ public class PlayerController : MonoBehaviour
 
     private void Hide(bool fromFront)
     {
+        if (fromFront) audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Courtain);
+
         animator.SetTrigger("Hide");
 
         if (fromFront) isHiddenFromFront = true;
@@ -148,6 +158,11 @@ public class PlayerController : MonoBehaviour
     {
         isAlive = false;
         //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
+
+        audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Explosion);
+        audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.BrokenGlass);
+        audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Laughter);
+
         Debug.Log("GAME OVER, PLAYER DIED");
     }
 
@@ -184,6 +199,8 @@ public class PlayerController : MonoBehaviour
         if (delay > 0f) yield return new WaitForSeconds(delay);
 
         yield return new WaitForFixedUpdate();
+
+        audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Step);
 
         moving = true;
         animator.SetTrigger("Move");

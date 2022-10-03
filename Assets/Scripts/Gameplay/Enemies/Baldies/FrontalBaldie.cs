@@ -29,6 +29,9 @@ public class FrontalBaldie : MonoBehaviour
     {
         if (turning) return;
 
+        AudioManager.Get().PlayGameplaySFX(AudioManager.GameplaySFXs.Huh);
+        AudioManager.Get().PlayGameplaySFX(AudioManager.GameplaySFXs.Spin);
+
         if (facingState == FacingStates.TurnedBack) StartTurningForward();
         else StartTurningBack();
     }
