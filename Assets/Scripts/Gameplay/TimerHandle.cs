@@ -48,7 +48,7 @@ public class TimerHandle : MonoBehaviour
             timer -= Time.deltaTime;
             if (timer < 0f) timer = 0f;
 
-            timerText.text = $"{timer.ToString("0.00")} s";
+            timerText.text = $"{timer.ToString("0.00")}";
         }
 
         EndTimer();
