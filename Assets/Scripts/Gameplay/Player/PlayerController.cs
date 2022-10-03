@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviour
 
     private AudioManager audioManager;
 
+    private bool canMoveRight = true;
+    private bool canMoveLeft = true;
+    private bool canMoveUp = true;
+    private bool canMoveDown = true;
+
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -68,10 +73,10 @@ public class PlayerController : MonoBehaviour
         }
         else if (!moving && !isAnimating)
         {
-            if (Input.GetKeyDown(KeyCode.W)) MoveInDir(Vector3.forward);
-            else if (Input.GetKeyDown(KeyCode.S)) MoveInDir(-Vector3.forward);
-            else if (Input.GetKeyDown(KeyCode.A)) MoveInDir(-Vector3.right);
-            else if (Input.GetKeyDown(KeyCode.D)) MoveInDir(Vector3.right);
+            if (Input.GetKeyDown(KeyCode.W) && canMoveUp) MoveInDir(Vector3.forward);
+            else if (Input.GetKeyDown(KeyCode.S) && canMoveDown) MoveInDir(-Vector3.forward);
+            else if (Input.GetKeyDown(KeyCode.A) && canMoveLeft) MoveInDir(-Vector3.right);
+            else if (Input.GetKeyDown(KeyCode.D) && canMoveRight) MoveInDir(Vector3.right);
             else if (Input.GetKeyDown(KeyCode.Space)) Jump();
         }
     }
@@ -84,7 +89,7 @@ public class PlayerController : MonoBehaviour
     private void MoveToPos(Vector3 pos, Action OnEnd = null, float delay = 0f)
     {
         StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd, delay));
-    }     
+    }
 
     private void Jump()
     {
@@ -164,6 +169,22 @@ public class PlayerController : MonoBehaviour
     public void OnEnterPedestalTrigger(Vector3 posToJumpTo)
     {
         StartCoroutine(JumpToPedestal(posToJumpTo));
+    }
+
+    public void RestrictMovement(bool right, bool left, bool up, bool down)
+    {
+        if (!right) canMoveRight = false;
+        if (!left) canMoveLeft = false;
+        if (!up) canMoveUp = false;
+        if (!down) canMoveDown = false;
+    }
+
+    public void UnRestrictMovement(bool right, bool left, bool up, bool down)
+    {
+        if (!right) canMoveRight = true;
+        if (!left) canMoveLeft = true;
+        if (!up) canMoveUp = true;
+        if (!down) canMoveDown = true;
     }
 
     public void OnWin()
