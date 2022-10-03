@@ -6,8 +6,7 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     public enum SFXAudioSources
     {
         UI,
-        SFX,
-        Dialogue
+        SFX
     }
 
     public enum UISFXs
@@ -18,8 +17,20 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
 
     public enum GameplaySFXs
     {
-        Guess,
-        Mistake
+        Explosion,
+        BrokenGlass,
+        Jump,
+        Spawn,
+        Step,
+        Clock,
+        Huh,
+        Laughter,
+        Spin,
+        Boo,
+        Cheer,
+        Courtain,
+        Door,
+        Slab
     }
 
     public enum Songs
