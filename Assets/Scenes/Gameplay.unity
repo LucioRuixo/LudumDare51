@@ -2848,6 +2848,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3751351904948153188, guid: f9b49c915319c364bb179faed7de119a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 218894112}
+    - target: {fileID: 3751351904948153188, guid: f9b49c915319c364bb179faed7de119a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoToMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 3751351904985897277, guid: f9b49c915319c364bb179faed7de119a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 218894112}
+    - target: {fileID: 3751351904985897277, guid: f9b49c915319c364bb179faed7de119a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetPauseState
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9b49c915319c364bb179faed7de119a, type: 3}
 --- !u!1001 &802453424
