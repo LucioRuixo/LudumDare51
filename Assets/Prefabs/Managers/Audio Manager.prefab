@@ -356,8 +356,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 696547a7042e00f40bbc79c27b4aff4d, type: 3}
   soundOn: 1
   musicOn: 1
-  soundBaseVolume: 1
-  musicBaseVolume: 1
+  soundBaseVolume: 0.5
+  musicBaseVolume: 0.5
 --- !u!1 &3831182759801473538
 GameObject:
   m_ObjectHideFlags: 0
