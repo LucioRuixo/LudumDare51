@@ -101,9 +101,12 @@ public class PlayerController : MonoBehaviour
 
     public void OnEnterHidingSpotTrigger(HidingSpot hidingSpot)
     {
+        if (transform.position.z > hidingSpot.transform.parent.position.z) return;
+
         Debug.Log("enter hiding");
         canHide = true;
         currentHidingSpot = hidingSpot;
+
         if (!moving) Hide(hidingSpot.HidingType == GameplayManager.BaldieTypes.Frontal);
     }
 
