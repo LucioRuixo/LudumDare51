@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -156,7 +156,7 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-        isAlive = false;
+        //isAlive = false;
         //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
 
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Explosion);
@@ -164,6 +164,8 @@ public class PlayerController : MonoBehaviour
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Laughter);
 
         Debug.Log("GAME OVER, PLAYER DIED");
+
+        SceneManager.LoadScene("Gameplay");
     }
 
     public void OnEnterPedestalTrigger(Vector3 posToJumpTo)
