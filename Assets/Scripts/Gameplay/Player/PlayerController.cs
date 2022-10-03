@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
-        audioManager = AudioManager.Get();
     }
 
     private void OnEnable()
@@ -40,6 +39,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        audioManager = AudioManager.Get();
+
         yPos = transform.position.y;
 
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Spawn);
