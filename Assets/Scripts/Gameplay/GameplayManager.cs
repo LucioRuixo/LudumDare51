@@ -114,6 +114,11 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
         currentStage = newStage;
     }
 
+    private void OnDestroy()
+    {
+        OnUnsafePhaseStart = null;
+    }
+
     #region Coroutines
     private IEnumerator UnsafePhase(BaldieTypes type)
     {
