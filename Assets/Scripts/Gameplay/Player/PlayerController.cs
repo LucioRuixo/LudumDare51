@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float stepLength = 0.5f;
     [SerializeField] private float stepSpeed = 50f;
+    [Space]
+    [SerializeField] private float deathDelay = 3f;
 
     private bool isAlive = true;
     private bool isAnimating = false;
@@ -67,6 +69,9 @@ public class PlayerController : MonoBehaviour
         {
             UIManagerGameplay.Get().TogglePauseState();
         }
+
+        if (!isAlive) return;
+
         if (isHiddenFromFront || isHiddenFromAbove)
         {
             if (Input.GetKeyDown(KeyCode.E)) StopHiding();
@@ -161,16 +166,15 @@ public class PlayerController : MonoBehaviour
     {
         if (GameplayManager.Get().Invincible) return;
 
-        //isAlive = false;
-        //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
+        Debug.Log("GAME OVER, PLAYER DIED");
+
+        isAlive = false;
 
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Explosion);
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.BrokenGlass);
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Laughter);
 
-        Debug.Log("GAME OVER, PLAYER DIED");
-
-        SceneManager.LoadScene("Gameplay");
+        StartCoroutine(DelayDeath());
     }
 
     public void OnEnterPedestalTrigger(Vector3 posToJumpTo)
@@ -282,6 +286,14 @@ public class PlayerController : MonoBehaviour
         MoveToPos(posToJumpTo);
         animator.SetTrigger("JumpToPedestal");
     }
-    
+
+    private IEnumerator DelayDeath()
+    {
+        yield return new WaitForSeconds(deathDelay);
+
+        //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
+
+        SceneManager.LoadScene("Gameplay");
+    }
     #endregion
 }
