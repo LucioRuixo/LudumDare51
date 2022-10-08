@@ -604,7 +604,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.6564075, y: 0.7924366}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 60, y: -20}
+  m_AnchoredPosition: {x: 2580.6047, y: 1691.6631}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &195370192
@@ -761,8 +761,8 @@ GameObject:
   - component: {fileID: 218894110}
   - component: {fileID: 218894109}
   - component: {fileID: 218894108}
-  - component: {fileID: 218894112}
   - component: {fileID: 218894113}
+  - component: {fileID: 218894112}
   m_Layer: 5
   m_Name: HUD Canvas
   m_TagString: Untagged
@@ -862,13 +862,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 218894107}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dc9ce23b8f48db42aa997d8526ec2e0, type: 3}
+  m_Script: {fileID: 11500000, guid: b73eebb517807624999f71f99b0216a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  credits: {fileID: 0}
-  tutorial: {fileID: 0}
   pauseMenu: {fileID: 648296488}
-  openingCutscene: {fileID: 0}
 --- !u!95 &218894113
 Animator:
   serializedVersion: 3
@@ -2901,18 +2898,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 218894112}
-    - target: {fileID: 3751351904948153188, guid: f9b49c915319c364bb179faed7de119a, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: GoToMainMenu
-      objectReference: {fileID: 0}
     - target: {fileID: 3751351904985897277, guid: f9b49c915319c364bb179faed7de119a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 218894112}
-    - target: {fileID: 3751351904985897277, guid: f9b49c915319c364bb179faed7de119a, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetPauseState
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9b49c915319c364bb179faed7de119a, type: 3}
 --- !u!1001 &802453424

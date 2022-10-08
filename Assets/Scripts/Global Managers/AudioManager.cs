@@ -65,7 +65,7 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        UIManager.OnOpeningCutscenePlayed += OnOpeningCutscenePlayed;
+        UIManager_MainMenu.OnOpeningCutscenePlayed += OnOpeningCutscenePlayed;
     }
 
     void Start()
@@ -77,7 +77,7 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        UIManager.OnOpeningCutscenePlayed -= OnOpeningCutscenePlayed;
+        UIManager_MainMenu.OnOpeningCutscenePlayed -= OnOpeningCutscenePlayed;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)

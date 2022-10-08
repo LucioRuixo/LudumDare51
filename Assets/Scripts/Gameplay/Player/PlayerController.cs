@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            UIManager.Get().TogglePauseState();
+            UIManagerGameplay.Get().TogglePauseState();
         }
         if (isHiddenFromFront || isHiddenFromAbove)
         {
