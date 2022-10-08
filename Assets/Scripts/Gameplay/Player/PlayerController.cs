@@ -159,6 +159,8 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
+        if (GameplayManager.Get().Invincible) return;
+
         //isAlive = false;
         //GameData.Get().SetWinState(false);  //cuando la escena este lista descomentar esto para tener lose condition
 

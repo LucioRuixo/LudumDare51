@@ -31,13 +31,19 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
     [Header("Gameplay Settings")]
     [SerializeField] private float unsafePhaseDuration = 3f;
 
+    [Header("Debug")]
+    [SerializeField] private bool invincible = false;
+    public bool Invincible => invincible;
+
+    [Space]
+
+    [SerializeField] private StageData initialStage;
+    [SerializeField] private StageData currentStage;
+
     private bool safe = true;
 
     private BaldieTypes currentUnsafePhaseType = BaldieTypes.Frontal;
     private BaldieTypes lastUnsafePhaseType = BaldieTypes.Frontal;
-
-    [SerializeField] private StageData initialStage;
-    [SerializeField] private StageData currentStage;
 
     public bool Safe => safe;
     public BaldieTypes CurrentUnsafePhaseType => currentUnsafePhaseType;

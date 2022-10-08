@@ -3343,6 +3343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timer: {fileID: 1132699376}
   unsafePhaseDuration: 3
+  invincible: 0
   initialStage:
     type: 0
     frontalBaldie: {fileID: 631084032}
