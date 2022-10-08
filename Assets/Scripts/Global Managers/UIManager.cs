@@ -6,12 +6,16 @@ using UnityEngine.Video;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
+    [Header("Main Menu")]
+    [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject credits;
     [SerializeField] private GameObject tutorial;
-    [SerializeField] private GameObject pauseMenu;
     [SerializeField] private VideoPlayer openingCutscene;
 
-    private bool openingCutscenePlayed = false;
+    [Header("Gameplay")]
+    [SerializeField] private GameObject pauseMenu;
+
+    private bool openingCutscenePlayed = true;
     private bool pauseState = false;
 
     public static event Action OnOpeningCutscenePlayed;
@@ -28,7 +32,16 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
     {
-        if (scene.name == "MainMenu" && !openingCutscenePlayed) StartCoroutine(PlayOpeningCutscene());
+        if (scene.name == "MainMenu")
+        {
+            if (!openingCutscenePlayed) StartCoroutine(PlayOpeningCutscene());
+            else SetMenuPanelVisibility(true);
+        }
+    }
+
+    public void SetMenuPanelVisibility(bool newVisibility)
+    {
+        menuPanel.SetActive(newVisibility);
     }
 
     public void SetCreditsVisibility(bool newVisibility)
@@ -39,6 +52,11 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void SetTutorialVisibility(bool newVisibility)
     {
         tutorial.SetActive(newVisibility);
+    }
+
+    public void SetOpeningCutsceneVisibility(bool newVisibility)
+    {
+        openingCutscene.gameObject.SetActive(newVisibility);
     }
 
     public void TogglePauseState()
@@ -80,6 +98,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     #region Coroutines
     private IEnumerator PlayOpeningCutscene()
     {
+        SetOpeningCutsceneVisibility(true);
         openingCutscene.Prepare();
 
         yield return new WaitUntil(() => openingCutscene.isPrepared);
@@ -88,7 +107,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
         yield return new WaitUntil(() => !openingCutscene.isPlaying);
 
-        openingCutscene.gameObject.SetActive(false);
+        SetMenuPanelVisibility(true);
+        SetOpeningCutsceneVisibility(false);
         openingCutscenePlayed = true;
 
         OnOpeningCutscenePlayed?.Invoke();
