@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     #endregion
 
+    [SerializeField] private Transform body;
+    [Space]
     [SerializeField] private float stepLength = 0.5f;
     [SerializeField] private float stepSpeed = 50f;
     [Space]
@@ -78,22 +80,22 @@ public class PlayerController : MonoBehaviour
         }
         else if (!moving && !isAnimating)
         {
-            if (Input.GetKeyDown(KeyCode.W) && canMoveUp) MoveInDir(Vector3.forward);
-            else if (Input.GetKeyDown(KeyCode.S) && canMoveDown) MoveInDir(-Vector3.forward);
-            else if (Input.GetKeyDown(KeyCode.A) && canMoveLeft) MoveInDir(-Vector3.right);
-            else if (Input.GetKeyDown(KeyCode.D) && canMoveRight) MoveInDir(Vector3.right);
+            if (Input.GetKeyDown(KeyCode.W) && canMoveUp) MoveInDir(Vector3.forward, Vector3.forward);
+            else if (Input.GetKeyDown(KeyCode.S) && canMoveDown) MoveInDir(-Vector3.forward, -Vector3.forward);
+            else if (Input.GetKeyDown(KeyCode.A) && canMoveLeft) MoveInDir(-Vector3.right, -Vector3.right);
+            else if (Input.GetKeyDown(KeyCode.D) && canMoveRight) MoveInDir(Vector3.right, Vector3.right);
             else if (Input.GetKeyDown(KeyCode.Space)) Jump();
         }
     }
 
-    private void MoveInDir(Vector3 dir)
+    private void MoveInDir(Vector3 dir, Vector3? lookAt = null)
     {
-        MoveToPos(transform.position + dir.normalized * stepLength);
+        MoveToPos(transform.position + dir.normalized * stepLength, null, 0f, lookAt);
     }
 
-    private void MoveToPos(Vector3 pos, Action OnEnd = null, float delay = 0f)
+    private void MoveToPos(Vector3 pos, Action OnEnd = null, float delay = 0f, Vector3? lookAt = null)
     {
-        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd, delay));
+        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd, delay, lookAt));
     }
 
     private void Jump()
@@ -127,14 +129,18 @@ public class PlayerController : MonoBehaviour
         currentHidingSpot.Animate();
         posBeforeHiding = lastPosition;
         canHide = false;
-        MoveToPos(currentHidingSpot.transform.position, null, 0.25f);
+
+        Vector3 lookAt = (currentHidingSpot.transform.position - body.position).normalized;
+        MoveToPos(currentHidingSpot.transform.position, null, 0.25f, lookAt);
     }
 
     private void StopHiding()
     {
         animator.SetTrigger("Stop Hiding");
 
-        MoveToPos(posBeforeHiding, () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal), 0.25f);
+        Action OnEnd = () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal);
+        Vector3 lookAt = (posBeforeHiding - currentHidingSpot.transform.position).normalized;
+        MoveToPos(posBeforeHiding, OnEnd, 0.25f, lookAt);
 
         currentHidingSpot.Animate();
 
@@ -205,8 +211,10 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Coroutines
-    private IEnumerator Move(Vector3 pos, Action OnEnd = null, float delay = 0f)
+    private IEnumerator Move(Vector3 pos, Action OnEnd = null, float delay = 0f, Vector3? lookAt = null)
     {
+        if (lookAt != null) body.rotation = Quaternion.LookRotation((Vector3)lookAt, Vector3.up);
+
         if (delay > 0f) yield return new WaitForSeconds(delay);
 
         yield return new WaitForFixedUpdate();

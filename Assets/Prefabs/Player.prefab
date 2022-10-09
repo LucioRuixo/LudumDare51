@@ -45,8 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102162ae0f610f4468c8dd38462860e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  body: {fileID: 6096207686503382783}
   stepLength: 0.1
   stepSpeed: 20
+  deathDelay: 3
 --- !u!1 &766238088723875851
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +532,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -508777419755485343, guid: 0079eccef7662bd4faad5a2ab5b748a6, type: 3}
   m_PrefabInstance: {fileID: 5985475125338134804}
   m_PrefabAsset: {fileID: 0}
+--- !u!54 &7650840058946709402
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3161764758807076469}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!65 &1849556433126976073
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -556,22 +574,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 5629944944115431285}
---- !u!54 &7650840058946709402
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3161764758807076469}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!95 &1468996439434597380
 Animator:
   serializedVersion: 3
