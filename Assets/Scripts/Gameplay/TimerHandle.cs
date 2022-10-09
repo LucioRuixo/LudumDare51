@@ -48,7 +48,7 @@ public class TimerHandle : MonoBehaviour
                 AudioManager.Get().PlayGameplaySFX(AudioManager.GameplaySFXs.Clock);
 
                 warn = timer < warningTime + 0.1f;
-                if (warn) StartCoroutine(FlashRed(0.5f));
+                if (warn) StartCoroutine(FlashRed(warningFadeDuration));
 
                 timeSinceLastSecond = 0f;
             }

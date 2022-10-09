@@ -1,18 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
 {
-    public enum SFXAudioSources
-    {
-        UI,
-        SFX
-    }
-
     public enum UISFXs
     {
-        Click,
-        CountdownTick,
     }
 
     public enum GameplaySFXs
@@ -39,21 +33,37 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
         Gameplay
     }
 
+    [Serializable]
+    private struct RandomizableSFX
+    {
+        public AudioClip[] clips;
+    }
+
+    [Serializable]
+    private struct SourceList
+    {
+        public Transform container;
+        public List<AudioSource> sources;
+    }
+
+    [SerializeField] private GameObject audioSourcePrefab;
+
     [Header("Audio Sources")]
-    [SerializeField] AudioSource[] sfxAudioSources;
-    [SerializeField] AudioSource musicAudioSource;
+    [SerializeField] private AudioSource musicAudioSource;
+    [SerializeField] private SourceList uiAudioSources;
+    [SerializeField] private SourceList gameplayAudioSources;
 
     [Header("Audio Clips")]
-    [SerializeField] AudioClip[] uiSFXs;
-    [SerializeField] AudioClip[] gameplaySFXs;
-    [SerializeField] AudioClip[] music;
+    [SerializeField] private AudioClip[] music;
+    [SerializeField] private RandomizableSFX[] uiSFXs;
+    [SerializeField] private RandomizableSFX[] gameplaySFXs;
 
     [Header("Sound Options")]
-    [SerializeField] bool soundOn = true;
-    [SerializeField] bool musicOn = true;
+    [SerializeField] private bool soundOn = true;
+    [SerializeField] private bool musicOn = true;
     [Space]
-    [SerializeField, Range(0.0f, 1.0f)] float soundBaseVolume = 1.0f;
-    [SerializeField, Range(0.0f, 1.0f)] float musicBaseVolume = 1.0f;
+    [SerializeField, Range(0.0f, 1.0f)] private float soundBaseVolume = 1.0f;
+    [SerializeField, Range(0.0f, 1.0f)] private float musicBaseVolume = 1.0f;
 
     private string lastScene;
 
@@ -73,7 +83,8 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     void Start()
     {
         musicAudioSource.volume = musicBaseVolume;
-        foreach (AudioSource source in sfxAudioSources) source.volume = soundBaseVolume;
+        foreach (AudioSource source in uiAudioSources.sources) source.volume = soundBaseVolume;
+        foreach (AudioSource source in gameplayAudioSources.sources) source.volume = soundBaseVolume;
 
         if (SceneManager.GetActiveScene().name != "MainMenu") playMusicOnEnterMainMenu = true;
     }
@@ -102,16 +113,41 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
         playMusicOnEnterMainMenu = true;
     }
 
-    #region Sound
-    private void UpdateSoundVolume(float volume) { foreach (AudioSource source in sfxAudioSources) source.volume = volume * soundBaseVolume; }
+    #region SFX
+    private void UpdateSoundVolume(float volume)
+    {
+        foreach (AudioSource source in uiAudioSources.sources) source.volume = volume * soundBaseVolume;
+        foreach (AudioSource source in gameplayAudioSources.sources) source.volume = volume * soundBaseVolume;
+    }
 
     private void StopSFXOnNewScene(string sceneName)
     {
-        foreach (AudioSource source in sfxAudioSources)
+        foreach (AudioSource source in uiAudioSources.sources)
         {
             do source.Stop();
             while (source.isPlaying);
         }
+
+        foreach (AudioSource source in gameplayAudioSources.sources)
+        {
+            do source.Stop();
+            while (source.isPlaying);
+        }
+    }
+
+    private AudioSource GetAvailableAudioSource(SourceList sourceList)
+    {
+        foreach (AudioSource source in sourceList.sources) if (!source.isPlaying) return source;
+
+        AudioSource newSource = Instantiate(audioSourcePrefab, sourceList.container).GetComponent<AudioSource>();
+        sourceList.sources.Add(newSource);
+
+        return newSource;
+    }
+
+    private AudioClip GetRandomClip(RandomizableSFX sfx)
+    {
+        return sfx.clips[UnityEngine.Random.Range(0, sfx.clips.Length)];
     }
 
     public void ToggleSound()
@@ -123,9 +159,9 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     {
         if (!soundOn) return;
 
-        AudioSource source = sfxAudioSources[(int)SFXAudioSources.UI];
+        AudioSource source = GetAvailableAudioSource(uiAudioSources);
 
-        source.clip = uiSFXs[(int)sfx];
+        source.clip = GetRandomClip(uiSFXs[(int)sfx]);
         source.Play();
     }
 
@@ -133,9 +169,9 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     {
         if (!soundOn) return;
 
-        AudioSource source = sfxAudioSources[(int)SFXAudioSources.SFX];
+        AudioSource source = GetAvailableAudioSource(gameplayAudioSources);
 
-        source.clip = gameplaySFXs[(int)sfx];
+        source.clip = GetRandomClip(gameplaySFXs[(int)sfx]);
         source.Play();
     }
     #endregion
