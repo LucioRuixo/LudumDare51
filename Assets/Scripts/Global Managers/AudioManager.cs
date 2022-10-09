@@ -78,6 +78,11 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
         if (SceneManager.GetActiveScene().name != "MainMenu") playMusicOnEnterMainMenu = true;
     }
 
+    private void Update()
+    {
+        if (!musicAudioSource.isPlaying) PlayMusicOnScene(SceneManager.GetActiveScene().name);
+    }
+
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -86,7 +91,7 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
     {
-        PlayMusicOnNewScene(scene.name);
+        PlayMusicOnScene(scene.name);
 
         lastScene = scene.name;
     }
@@ -141,7 +146,7 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
         musicAudioSource.volume = volume * musicBaseVolume;
     }
 
-    private void PlayMusicOnNewScene(string sceneName)
+    private void PlayMusicOnScene(string sceneName)
     {
         bool playNewSong = false;
         Songs song = 0;
