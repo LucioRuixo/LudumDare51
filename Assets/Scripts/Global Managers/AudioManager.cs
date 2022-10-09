@@ -55,6 +55,8 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     [SerializeField, Range(0.0f, 1.0f)] float soundBaseVolume = 1.0f;
     [SerializeField, Range(0.0f, 1.0f)] float musicBaseVolume = 1.0f;
 
+    private string lastScene;
+
     private bool playMusicOnEnterMainMenu = false;
 
     public bool SoundOn { set { soundOn = value; } get { return soundOn; } }
@@ -72,6 +74,8 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     {
         musicAudioSource.volume = musicBaseVolume;
         foreach (AudioSource source in sfxAudioSources) source.volume = soundBaseVolume;
+
+        if (SceneManager.GetActiveScene().name != "MainMenu") playMusicOnEnterMainMenu = true;
     }
 
     void OnDisable()
@@ -83,6 +87,8 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
     {
         PlayMusicOnNewScene(scene.name);
+
+        lastScene = scene.name;
     }
 
     private void OnOpeningCutscenePlayed()
@@ -150,8 +156,11 @@ public class AudioManager : PersistentMonoBehaviourSingleton<AudioManager>
                 }
                 break;
             case "Gameplay":
-                song = Songs.Gameplay;
-                playNewSong = true;
+                if (lastScene != "Gameplay")
+                {
+                    song = Songs.Gameplay;
+                    playNewSong = true;
+                }
                 break;
             default:
                 break;

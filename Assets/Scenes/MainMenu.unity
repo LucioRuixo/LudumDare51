@@ -529,11 +529,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2602048456254226577, guid: 6bfcea1546a40884db8ac2d96020ed71, type: 3}
-      propertyPath: m_text
-      value: "Game Designer\nArt director - Concept Artist\n no se hacer creditos
-        aaaa"
-      objectReference: {fileID: 0}
     - target: {fileID: 6363193887204859341, guid: 6bfcea1546a40884db8ac2d96020ed71, type: 3}
       propertyPath: m_Name
       value: Main Menu Canvas
