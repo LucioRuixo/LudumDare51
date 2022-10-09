@@ -9,6 +9,7 @@ public class FrontalBaldie : MonoBehaviour
         TurnedForward
     }
 
+    [SerializeField] private Transform peladou;
     [SerializeField] private float turnSpeed = 250f;
 
     private bool turning = false;
@@ -43,20 +44,20 @@ public class FrontalBaldie : MonoBehaviour
 
         turning = true;
         float anglesPerTick = turnSpeed * Time.fixedDeltaTime;
-        float initialAngle = transform.rotation.eulerAngles.y;
+        float initialAngle = peladou.rotation.eulerAngles.y;
         float targetAngle = initialAngle + angle;
 
         float rotatedAngle = 0f;
         while (rotatedAngle < Mathf.Abs(angle))
         {
-            Vector3 rotation = transform.rotation.eulerAngles;
+            Vector3 rotation = peladou.rotation.eulerAngles;
 
             rotatedAngle += Mathf.Abs(anglesPerTick);
 
             if (rotatedAngle <= Mathf.Abs(angle)) rotation.y += anglesPerTick;
             else rotation.y = targetAngle;
 
-            transform.rotation = Quaternion.Euler(rotation);
+            peladou.rotation = Quaternion.Euler(rotation);
 
             yield return new WaitForFixedUpdate();
         }
