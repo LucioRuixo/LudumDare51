@@ -7,7 +7,9 @@ public class TimerHandle : MonoBehaviour
 {
     [SerializeField] private TMP_Text timerText;
     [Space]
-    [SerializeField] private float duration = 10f;
+    [SerializeField] private int duration = 10;
+    [SerializeField] private int warningTime = 5;
+    [SerializeField, Range(0f, 1f)] private float warningFadeDuration = 0.5f;
 
     private float timer;
 
@@ -32,16 +34,22 @@ public class TimerHandle : MonoBehaviour
     private IEnumerator Timer(float duration)
     {
         timer = duration;
+
         float timeSinceLastSecond = 0f;
+        bool warn = false;
 
         while (timer > 0f)
         {
+            yield return null;
             timeSinceLastSecond += Time.deltaTime;
-            yield return new WaitForSeconds(Time.deltaTime);
 
             if (timeSinceLastSecond >= 1f)
             {
                 AudioManager.Get().PlayGameplaySFX(AudioManager.GameplaySFXs.Clock);
+
+                warn = timer < warningTime + 0.1f;
+                if (warn) StartCoroutine(FlashRed(0.5f));
+
                 timeSinceLastSecond = 0f;
             }
 
@@ -52,6 +60,30 @@ public class TimerHandle : MonoBehaviour
         }
 
         EndTimer();
+    }
+
+    private IEnumerator FlashRed(float fadeDuration)
+    {
+        Color initialColor = timerText.color;
+        float fadeDurationHalf = fadeDuration / 2f;
+
+        float t = 0f;
+        while (timerText.color != Color.red)
+        {
+            t += Time.deltaTime / fadeDurationHalf;
+            timerText.color = Color.Lerp(initialColor, Color.red, t);
+
+            yield return null;
+        }
+
+        t = 0f;
+        while (timerText.color != initialColor)
+        {
+            t += Time.deltaTime / fadeDurationHalf;
+            timerText.color = Color.Lerp(Color.red, initialColor, t);
+
+            yield return null;
+        }
     }
     #endregion
 }

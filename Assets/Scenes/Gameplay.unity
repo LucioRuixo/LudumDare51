@@ -4781,6 +4781,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1649468765}
   duration: 10
+  warningTime: 5
+  warningFadeDuration: 0.5
 --- !u!4 &1136201604 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7868503211604257369, guid: 869c34eafdc858149b58858033b8b6eb, type: 3}
