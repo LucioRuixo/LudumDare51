@@ -8528,10 +8528,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 766238087615716045, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 766238087615716046, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
       propertyPath: m_RootOrder
       value: 11
@@ -8575,22 +8571,6 @@ PrefabInstance:
     - target: {fileID: 766238087615716046, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5629944944115431285, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
-      propertyPath: stepLength
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6096207686503382783, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6096207686503382783, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6904515465271993413, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}
-      propertyPath: m_TagString
-      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37aee4fa9a206b64e8639a3ad06d8aff, type: 3}

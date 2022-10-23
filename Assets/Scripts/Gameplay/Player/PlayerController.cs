@@ -88,14 +88,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void MoveInDir(Vector3 dir, Vector3? lookAt = null)
+    private void MoveInDir(Vector3 dir, Vector3? lookAt = null, bool OnDifferentAnimation = false)
     {
-        MoveToPos(transform.position + dir.normalized * stepLength, null, 0f, lookAt);
+        MoveToPos(transform.position + dir.normalized * stepLength, null, 0f, lookAt, OnDifferentAnimation);
     }
 
-    private void MoveToPos(Vector3 pos, Action OnEnd = null, float delay = 0f, Vector3? lookAt = null)
+    private void MoveToPos(Vector3 pos, Action OnEnd = null, float delay = 0f, Vector3? lookAt = null, bool OnDifferentAnimation = false)
     {
-        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd, delay, lookAt));
+        StartCoroutine(Move(new Vector3(pos.x, yPos, pos.z), OnEnd, delay, lookAt, OnDifferentAnimation));
     }
 
     private void Jump()
@@ -130,8 +130,8 @@ public class PlayerController : MonoBehaviour
         posBeforeHiding = lastPosition;
         canHide = false;
 
-        Vector3 lookAt = (currentHidingSpot.transform.position - body.position).normalized;
-        MoveToPos(currentHidingSpot.transform.position, null, 0.25f, lookAt);
+        Vector3 lookAt = (new Vector3(currentHidingSpot.transform.position.x, body.position.y, currentHidingSpot.transform.position.z) - body.position).normalized;
+        MoveToPos(currentHidingSpot.transform.position, null, 0.25f, lookAt,true);
     }
 
     private void StopHiding()
@@ -139,8 +139,8 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Stop Hiding");
 
         Action OnEnd = () => CheckSafety(GameplayManager.Get().CurrentUnsafePhaseType == GameplayManager.BaldieTypes.Frontal);
-        Vector3 lookAt = (posBeforeHiding - currentHidingSpot.transform.position).normalized;
-        MoveToPos(posBeforeHiding, OnEnd, 0.25f, lookAt);
+        Vector3 lookAt = (posBeforeHiding - new Vector3(currentHidingSpot.transform.position.x, posBeforeHiding.y, currentHidingSpot.transform.position.z)).normalized;
+        MoveToPos(posBeforeHiding, OnEnd, 0.25f, lookAt, true);
 
         currentHidingSpot.Animate();
 
@@ -211,7 +211,7 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Coroutines
-    private IEnumerator Move(Vector3 pos, Action OnEnd = null, float delay = 0f, Vector3? lookAt = null)
+    private IEnumerator Move(Vector3 pos, Action OnEnd = null, float delay = 0f, Vector3? lookAt = null, bool OnDifferentAnimation = false)
     {
         if (lookAt != null) body.rotation = Quaternion.LookRotation((Vector3)lookAt, Vector3.up);
 
@@ -222,7 +222,8 @@ public class PlayerController : MonoBehaviour
         audioManager.PlayGameplaySFX(AudioManager.GameplaySFXs.Step);
 
         moving = true;
-        animator.SetTrigger("Move");
+
+        if (!OnDifferentAnimation) animator.SetTrigger("Move");
 
         lastPosition = transform.position;
         float distancePerFrame = stepSpeed * Time.fixedDeltaTime;
